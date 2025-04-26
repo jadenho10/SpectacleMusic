@@ -190,9 +190,6 @@ class ImageProcessor {
   }
 }
 
-/**
- * Main function to process all images in the mock_data folder
- */
 function runImageProcessor(): Promise<void> {
   return new Promise(async (resolve, reject) => {
     try {

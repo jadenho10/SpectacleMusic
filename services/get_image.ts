@@ -15,7 +15,7 @@ class ImageProcessor {
   private readonly mockDataDir: string;
   
   /**
-   * @param apiKey - Gemini API key
+   * @param Gemini API Key
    */
   constructor(apiKey: string) {
     this.genAI = new GoogleGenerativeAI(apiKey);

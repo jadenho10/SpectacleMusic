@@ -5,9 +5,6 @@ import { config } from "dotenv";
 
 config();
 
-/**
- * Interface for image file details
- */
 interface ImageDetails {
   path: string;
   mimeType: string;

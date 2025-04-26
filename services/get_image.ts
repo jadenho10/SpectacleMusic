@@ -60,7 +60,7 @@ class ImageProcessor {
       return {};
     }
     
-    console.log(`Found ${imageFiles.length} images to process`);
+    console.log(`${imageFiles.length} images to process`);
     
     const results: Record<string, string> = {};
     

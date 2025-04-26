@@ -157,9 +157,9 @@ class ImageProcessor {
 function runImageProcessor(): Promise<void> {
   return new Promise(async (resolve, reject) => {
     try {
-      const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+      const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        throw new Error('API key not found. Please set GOOGLE_API_KEY or GEMINI_API_KEY in .env file');
+        throw new Error('API key error.');
       }
       
       const processor = new ImageProcessor(apiKey);
@@ -168,7 +168,7 @@ function runImageProcessor(): Promise<void> {
       const captions = await processor.processAllImages();
       console.log('\nImage Captions:');
       console.table(captions);
-            
+
       resolve();
     } catch (error) {
       console.error('Error in main function:', error);

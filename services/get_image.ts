@@ -115,13 +115,8 @@ class ImageProcessor {
   
   private async captionSingleImage(imageFile: ImageDetails): Promise<string> {
     try {
-      // Get the model
       const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-      
-      // Read the image data
-      const imageData = fs.readFileSync(imageFile.path);
-      
-      // Create a chat session
+      const imageData = fs.readFileSync(imageFile.path);      
       const chat = model.startChat();
       
       // Prepare parts for message with prompt and image

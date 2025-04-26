@@ -2,11 +2,15 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { config } from "dotenv";
-import express from "express";
-import multer from "multer";
+import express, { Request, Response } from "express";
+import multer, { FileFilterCallback } from "multer";
 import cors from "cors";
 
 config();
+
+// Type imports can be handled by installing these packages via npm
+// npm install --save express multer cors
+// npm install --save-dev @types/express @types/multer @types/cors
 
 interface ImageDetails {
   path: string;
@@ -171,14 +175,14 @@ function setupWebhookServer(): void {
   
   // Configure multer for file uploads
   const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
       const uploadDir = path.join(process.cwd(), 'uploads');
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }
       cb(null, uploadDir);
     },
-    filename: (req, file, cb) => {
+    filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       cb(null, uniqueSuffix + path.extname(file.originalname));
     }
@@ -192,12 +196,12 @@ function setupWebhookServer(): void {
   app.use(express.urlencoded({ extended: true }));
   
   // Health check endpoint
-  app.get('/health', (req, res) => {
+  app.get('/health', (req: Request, res: Response) => {
     res.status(200).json({ status: 'ok' });
   });
   
   // Process a single uploaded image
-  app.post('/process-image', upload.single('image'), async (req, res) => {
+  app.post('/process-image', upload.single('image'), async (req: Request, res: Response) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No image file provided' });
@@ -219,28 +223,28 @@ function setupWebhookServer(): void {
       // Clean up the uploaded file
       fs.unlinkSync(req.file.path);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error processing uploaded image:', error);
-      res.status(500).json({ error: 'Failed to process image', details: error.message });
+      res.status(500).json({ error: 'Failed to process image', details: error.message || String(error) });
     }
   });
   
   // Process multiple images from the mock_data directory
-  app.post('/process-all', async (req, res) => {
+  app.post('/process-all', async (req: Request, res: Response) => {
     try {
       const captions = await processor.processAllImages();
       res.status(200).json({
         success: true,
         captions
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error processing all images:', error);
-      res.status(500).json({ error: 'Failed to process images', details: error.message });
+      res.status(500).json({ error: 'Failed to process images', details: error.message || String(error) });
     }
   });
   
   // Process specific images from the mock_data directory
-  app.post('/process-specific', async (req, res) => {
+  app.post('/process-specific', async (req: Request, res: Response) => {
     try {
       const { images } = req.body;
       
@@ -253,9 +257,9 @@ function setupWebhookServer(): void {
         success: true,
         captions
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error processing specific images:', error);
-      res.status(500).json({ error: 'Failed to process specific images', details: error.message });
+      res.status(500).json({ error: 'Failed to process specific images', details: error.message || String(error) });
     }
   });
   

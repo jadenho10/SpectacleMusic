@@ -76,42 +76,7 @@ class ImageProcessor {
     }
     return results;
   }
-  
-  public async compareImages(promptText: string = "What is different between these images?"): Promise<string> {
-    const imageFiles = this.getImageFiles();
-    if (imageFiles.length < 2) {
-      throw new Error('Need at least 2 images to compare');
-    }
     
-    try {
-      const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-      const chat = model.startChat();
-      const parts: any[] = [];
-      
-      parts.push({
-        text: promptText
-      });
-      
-      for (const imageFile of imageFiles) {
-        const imageData = fs.readFileSync(imageFile.path);
-        parts.push({
-          inlineData: {
-            mimeType: imageFile.mimeType,
-            data: Buffer.from(imageData).toString('base64')
-          }
-        });
-      }
-      
-      const result = await chat.sendMessage(parts);
-      
-      const responseText = result.response.text();
-      return responseText;
-    } catch (error) {
-      console.error('Error comparing images:', error);
-      throw error;
-    }
-  }
-  
   private async captionSingleImage(imageFile: ImageDetails): Promise<string> {
     try {
       const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });

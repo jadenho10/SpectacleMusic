@@ -56,7 +56,7 @@ class ImageProcessor {
   public async processAllImages(): Promise<Record<string, string>> {
     const imageFiles = this.getImageFiles();
     if (imageFiles.length === 0) {
-      console.warn('No image files found in mock_data directory');
+      console.warn('No image files in mock_data directory');
       return {};
     }
     

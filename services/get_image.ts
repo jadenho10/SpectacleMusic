@@ -129,7 +129,6 @@ class ImageProcessor {
         }
       ];
       
-      // Send the message with all parts
       const result = await chat.sendMessage(parts);
       
       // Get the response text

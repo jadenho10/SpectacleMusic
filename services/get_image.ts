@@ -1,10 +1,4 @@
-import {
-  GoogleGenAI,
-  createUserContent,
-  createPartFromUri,
-  GenerateContentResponse,
-  Part
-} from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { config } from "dotenv";
@@ -16,6 +10,18 @@ interface ImageDetails {
   path: string;
   mimeType: string;
 }
+
+// For type safety with the Gemini API
+type InlineDataPart = {
+  inlineData: {
+    mimeType: string;
+    data: string;
+  };
+};
+
+type TextPart = string;
+
+type Part = TextPart | InlineDataPart;
 
 class ImageProcessor {
   private ai: GoogleGenAI;
@@ -99,23 +105,27 @@ class ImageProcessor {
     }
     
     try {
+      // Start with the text prompt
       const contentParts: Part[] = [promptText];
       
       // Process images
       for (const imageFile of imageFiles) {
         const base64ImageData = fs.readFileSync(imageFile.path, { encoding: 'base64' });
-        contentParts.push({
+        const imagePart: InlineDataPart = {
           inlineData: {
             mimeType: imageFile.mimeType,
             data: base64ImageData
           }
-        });
+        };
+        contentParts.push(imagePart);
       }
       
-      const response = await this.ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: createUserContent(contentParts)
-      });
+      // Create a model instance for the Gemini API
+      const model = this.ai.getGenerativeModel({ model: "gemini-2.0-flash" });
+      
+      // Generate the content
+      const result = await model.generateContent(contentParts);
+      const response = await result.response;
       
       return response.text();
     } catch (error) {
@@ -132,25 +142,65 @@ class ImageProcessor {
       // Read the image and convert to base64
       const base64ImageData = fs.readFileSync(imageFile.path, { encoding: 'base64' });
       
-      // Create the prompt with the image
-      const response = await this.ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: createUserContent([
-          "Describe what's in this image in detail",
-          {
-            inlineData: {
-              mimeType: imageFile.mimeType,
-              data: base64ImageData
-            }
-          }
-        ])
-      });
+      // Create the image part
+      const imagePart: InlineDataPart = {
+        inlineData: {
+          mimeType: imageFile.mimeType,
+          data: base64ImageData
+        }
+      };
+      
+      // Create content parts
+      const contentParts: Part[] = [
+        "Describe what's in this image in detail",
+        imagePart
+      ];
+      
+      // Create a model instance for the Gemini API
+      const model = this.ai.getGenerativeModel({ model: "gemini-2.0-flash" });
+      
+      // Generate the content
+      const result = await model.generateContent(contentParts);
+      const response = await result.response;
       
       return response.text();
     } catch (error) {
       console.error(`Error processing image ${imageFile.path}:`, error);
       throw error;
     }
+  }
+  
+  /**
+   * Process a specific list of images
+   */
+  public async processSpecificImages(imagePaths: string[]): Promise<Record<string, string>> {
+    const results: Record<string, string> = {};
+    
+    for (const imagePath of imagePaths) {
+      try {
+        const fullPath = path.isAbsolute(imagePath) ? imagePath : path.join(this.mockDataDir, imagePath);
+        const fileExt = path.extname(fullPath).toLowerCase();
+        let mimeType = 'image/jpeg';
+        
+        if (fileExt === '.png') {
+          mimeType = 'image/png';
+        }
+        
+        const imageFile: ImageDetails = {
+          path: fullPath,
+          mimeType
+        };
+        
+        const caption = await this.captionSingleImage(imageFile);
+        const fileName = path.basename(fullPath);
+        results[fileName] = caption;
+        console.log(`✅ Processed: ${fileName}`);
+      } catch (error) {
+        console.error(`❌ Error processing ${imagePath}:`, error);
+      }
+    }
+    
+    return results;
   }
 }
 

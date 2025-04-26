@@ -168,11 +168,7 @@ function runImageProcessor(): Promise<void> {
       const captions = await processor.processAllImages();
       console.log('\nImage Captions:');
       console.table(captions);
-      
-      console.log('\nComparing all images together...');
-      const comparison = await processor.compareImages();
-      console.log('Comparison Result:\n', comparison);
-      
+            
       resolve();
     } catch (error) {
       console.error('Error in main function:', error);

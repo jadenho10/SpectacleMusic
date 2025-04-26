@@ -28,7 +28,6 @@ class ImageProcessor {
       const imageFiles: ImageDetails[] = [];
       
       for (const file of files) {
-        // Skip hidden files like .DS_Store
         if (file.startsWith('.')) continue;
         
         const filePath = path.join(this.mockDataDir, file);

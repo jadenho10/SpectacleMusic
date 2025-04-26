@@ -159,11 +159,6 @@ class ImageProcessor {
     }
   }
   
-  /**
-   * Process a specific list of images
-   * @param imagePaths - Array of image file paths (absolute or relative to mock_data)
-   * @returns Record of image names to captions
-   */
   public async processSpecificImages(imagePaths: string[]): Promise<Record<string, string>> {
     const results: Record<string, string> = {};
     

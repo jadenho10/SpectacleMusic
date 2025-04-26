@@ -26,7 +26,7 @@ interface ImageDetails {
 
 class ImageProcessor {
   private genAI: GoogleGenerativeAI;
-  private readonly mockDataDir: string;
+  public readonly mockDataDir: string;
   
   /**
    * @param Gemini API Key

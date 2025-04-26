@@ -217,10 +217,8 @@ function runImageProcessor(): Promise<void> {
   });
 }
 
-// Export functions and classes for external use
 export { runImageProcessor as main, ImageProcessor };
 
-// Run the main function if this file is executed directly
 if (require.main === module) {
   runImageProcessor().catch(console.error);
 }

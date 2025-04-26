@@ -2,15 +2,22 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { config } from "dotenv";
-import express, { Request, Response } from "express";
-import multer, { FileFilterCallback } from "multer";
-import cors from "cors";
 
+// Define simple type definitions for the modules we'll use
+type Request = any;
+type Response = any;
+type Multer = any;
+
+// Dynamic imports for the server modules
+let express: any;
+let multer: any;
+let cors: any;
+
+// Load dotenv configuration
 config();
 
-// Type imports can be handled by installing these packages via npm
+// Add a comment indicating the required npm packages
 // npm install --save express multer cors
-// npm install --save-dev @types/express @types/multer @types/cors
 
 interface ImageDetails {
   path: string;
@@ -163,6 +170,17 @@ class ImageProcessor {
 
 // Setup Express server
 function setupWebhookServer(): void {
+  // Dynamically import the modules
+  try {
+    express = require('express');
+    multer = require('multer');
+    cors = require('cors');
+  } catch (error) {
+    console.error('Error importing required modules:', error);
+    console.log('Please install the necessary packages with: npm install express multer cors');
+    return;
+  }
+  
   const app = express();
   const PORT = process.env.PORT || 3000;
   const apiKey = process.env.GEMINI_API_KEY;
@@ -175,14 +193,14 @@ function setupWebhookServer(): void {
   
   // Configure multer for file uploads
   const storage = multer.diskStorage({
-    destination: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
+    destination: (req: any, file: any, cb: any) => {
       const uploadDir = path.join(process.cwd(), 'uploads');
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }
       cb(null, uploadDir);
     },
-    filename: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
+    filename: (req: any, file: any, cb: any) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
       cb(null, uniqueSuffix + path.extname(file.originalname));
     }
@@ -196,12 +214,12 @@ function setupWebhookServer(): void {
   app.use(express.urlencoded({ extended: true }));
   
   // Health check endpoint
-  app.get('/health', (req: Request, res: Response) => {
+  app.get('/health', (req: any, res: any) => {
     res.status(200).json({ status: 'ok' });
   });
   
   // Process a single uploaded image
-  app.post('/process-image', upload.single('image'), async (req: Request, res: Response) => {
+  app.post('/process-image', upload.single('image'), async (req: any, res: any) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No image file provided' });
@@ -230,7 +248,7 @@ function setupWebhookServer(): void {
   });
   
   // Process multiple images from the mock_data directory
-  app.post('/process-all', async (req: Request, res: Response) => {
+  app.post('/process-all', async (req: any, res: any) => {
     try {
       const captions = await processor.processAllImages();
       res.status(200).json({
@@ -244,7 +262,7 @@ function setupWebhookServer(): void {
   });
   
   // Process specific images from the mock_data directory
-  app.post('/process-specific', async (req: Request, res: Response) => {
+  app.post('/process-specific', async (req: any, res: any) => {
     try {
       const { images } = req.body;
       

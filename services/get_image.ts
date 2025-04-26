@@ -67,7 +67,7 @@ class ImageProcessor {
   }
   
   /**
-   * Processes all images in the mock_data folder
+   * Process all images in the mock_data folder and generate captions
    * @returns Record of image names to captions
    */
   public async processAllImages(): Promise<Record<string, string>> {
@@ -111,7 +111,7 @@ class ImageProcessor {
       const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
       
       // Create the parts for the content generation
-      const parts = [];
+      const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [];
       
       // Add the text prompt
       parts.push({ text: promptText });
@@ -155,7 +155,7 @@ class ImageProcessor {
       const imageData = fs.readFileSync(imageFile.path);
       
       // Create the parts for the content generation
-      const parts = [
+      const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [
         { text: "Describe what's in this image in detail" },
         {
           inlineData: {
@@ -175,6 +175,34 @@ class ImageProcessor {
       return response.text();
     } catch (error) {
       console.error(`Error processing image ${imageFile.path}:`, error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Upload an image file to Gemini API and get a URI reference
+   * This method is used when you want to reference images across multiple API calls
+   * @param imagePath - Path to the image file
+   * @returns Object with URI and mime type
+   */
+  public async uploadImage(imagePath: string): Promise<{ uri: string; mimeType: string }> {
+    try {
+      const fullPath = path.isAbsolute(imagePath) ? imagePath : path.join(this.mockDataDir, imagePath);
+      const fileExt = path.extname(fullPath).toLowerCase();
+      let mimeType = 'image/jpeg';
+      
+      if (fileExt === '.png') {
+        mimeType = 'image/png';
+      }
+      
+      // For Gemini API, we don't actually upload files but need their data
+      // This is a simplified implementation
+      return {
+        uri: `file://${fullPath}`,
+        mimeType
+      };
+    } catch (error) {
+      console.error(`Error uploading image ${imagePath}:`, error);
       throw error;
     }
   }
@@ -218,98 +246,37 @@ class ImageProcessor {
 /**
  * Main function to process all images in the mock_data folder
  */
-async function main(): Promise<void> {
-  try {
-    const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error('API key not found. Please set GOOGLE_API_KEY or GEMINI_API_KEY in .env file');
+function runImageProcessor(): Promise<void> {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error('API key not found. Please set GOOGLE_API_KEY or GEMINI_API_KEY in .env file');
+      }
+      
+      const processor = new ImageProcessor(apiKey);
+      
+      console.log('Processing individual images...');
+      const captions = await processor.processAllImages();
+      console.log('\nImage Captions:');
+      console.table(captions);
+      
+      console.log('\nComparing all images together...');
+      const comparison = await processor.compareImages();
+      console.log('Comparison Result:\n', comparison);
+      
+      resolve();
+    } catch (error) {
+      console.error('Error in main function:', error);
+      reject(error);
     }
-    
-    const processor = new ImageProcessor(apiKey);
-    
-    console.log('Processing individual images...');
-    const captions = await processor.processAllImages();
-    console.log('\nImage Captions:');
-    console.table(captions);
-    
-    console.log('\nComparing all images together...');
-    const comparison = await processor.compareImages();
-    console.log('Comparison Result:\n', comparison);
-    
-  } catch (error) {
-    console.error('Error in main function:', error);
-  }
+  });
 }
 
-// Export the main function and ImageProcessor class for external use
-export { main, ImageProcessor };
+// Export functions and classes for external use
+export { runImageProcessor as main, ImageProcessor };
 
 // Run the main function if this file is executed directly
 if (require.main === module) {
-  main().catch(console.error);
+  runImageProcessor().catch(console.error);
 }
-import {
-  GoogleGenAI,
-  createUserContent,
-  createPartFromUri,
-} from "@google/genai";
-import * as fs from "node:fs";
-
-// Mock data setup
-const mockUploadResponse = {
-  uri: "file://mock/image1.jpg",
-  mimeType: "image/jpeg",
-};
-
-const mockGenerateContentResponse = {
-  text: "Mock response: The first image shows a concert stage with bright lights, while the second image shows a close-up of a musical instrument.",
-};
-
-// Mock version of the GoogleGenAI class
-class MockGoogleGenAI {
-  files = {
-    upload: async () => mockUploadResponse,
-  };
-  
-  models = {
-    generateContent: async () => mockGenerateContentResponse,
-  };
-}
-
-async function main() {
-  // Use the mock API instead of real API
-  const ai = new MockGoogleGenAI();
-  
-  // Instead of reading real files, we can use mock file paths
-  const image1_path = "mock/path/to/image1.jpg";
-  const image2_path = "mock/path/to/image2.png";
-  
-  // Mock upload for first image
-  const uploadedFile = await ai.files.upload({
-    file: image1_path,
-    config: { mimeType: "image/jpeg" },
-  });
-
-  // For testing, we can either use a real base64 string or a placeholder
-  // Mock base64 data (this is just a placeholder, not real base64 data)
-  const mockBase64Image = "mocked_base64_data_would_be_here";
-  
-  // Use the mock functions but keep the original code structure
-  const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
-    contents: createUserContent([
-      "What is different between these two images?",
-      createPartFromUri(uploadedFile.uri, uploadedFile.mimeType),
-      {
-        inlineData: {
-          mimeType: "image/png",
-          data: mockBase64Image,
-        },
-      },
-    ]),
-  });
-  
-  console.log(response.text);
-}
-
-await main();

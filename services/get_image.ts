@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { config } from "dotenv";
@@ -6,34 +6,33 @@ import { config } from "dotenv";
 // Load environment variables
 config();
 
+/**
+ * Interface for image file details
+ */
 interface ImageDetails {
   path: string;
   mimeType: string;
 }
 
-// For type safety with the Gemini API
-type InlineDataPart = {
-  inlineData: {
-    mimeType: string;
-    data: string;
-  };
-};
-
-type TextPart = string;
-
-type Part = TextPart | InlineDataPart;
-
+/**
+ * Class for processing images with Gemini AI
+ */
 class ImageProcessor {
-  private ai: GoogleGenAI;
+  private genAI: GoogleGenerativeAI;
   private readonly mockDataDir: string;
   
+  /**
+   * Constructor
+   * @param apiKey - Gemini API key
+   */
   constructor(apiKey: string) {
-    this.ai = new GoogleGenAI({ apiKey });
+    this.genAI = new GoogleGenerativeAI(apiKey);
     this.mockDataDir = path.join(process.cwd(), 'mock_data');
   }
   
   /**
    * Gets all image files from the mock_data directory
+   * @returns Array of image file details
    */
   private getImageFiles(): ImageDetails[] {
     try {
@@ -69,6 +68,7 @@ class ImageProcessor {
   
   /**
    * Processes all images in the mock_data folder
+   * @returns Record of image names to captions
    */
   public async processAllImages(): Promise<Record<string, string>> {
     const imageFiles = this.getImageFiles();
@@ -96,37 +96,44 @@ class ImageProcessor {
   }
   
   /**
-   * Process multiple images together to compare them
+   * Compare multiple images and describe the differences
+   * @param promptText - Optional text prompt to use for comparing images
+   * @returns Text description of image comparison
    */
-  public async compareImages(promptText: string = "What is shown in these images?"): Promise<string> {
+  public async compareImages(promptText: string = "What is different between these images?"): Promise<string> {
     const imageFiles = this.getImageFiles();
     if (imageFiles.length < 2) {
       throw new Error('Need at least 2 images to compare');
     }
     
     try {
-      // Start with the text prompt
-      const contentParts: Part[] = [promptText];
+      // Get the model
+      const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
       
-      // Process images
+      // Create the parts for the content generation
+      const parts = [];
+      
+      // Add the text prompt
+      parts.push({ text: promptText });
+      
+      // Add each image as a part
       for (const imageFile of imageFiles) {
-        const base64ImageData = fs.readFileSync(imageFile.path, { encoding: 'base64' });
-        const imagePart: InlineDataPart = {
+        const imageData = fs.readFileSync(imageFile.path);
+        parts.push({
           inlineData: {
             mimeType: imageFile.mimeType,
-            data: base64ImageData
+            data: Buffer.from(imageData).toString('base64')
           }
-        };
-        contentParts.push(imagePart);
+        });
       }
       
-      // Create a model instance for the Gemini API
-      const model = this.ai.getGenerativeModel({ model: "gemini-2.0-flash" });
+      // Generate content
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts }]
+      });
       
-      // Generate the content
-      const result = await model.generateContent(contentParts);
+      // Get the response
       const response = await result.response;
-      
       return response.text();
     } catch (error) {
       console.error('Error comparing images:', error);
@@ -136,33 +143,35 @@ class ImageProcessor {
   
   /**
    * Captions a single image using Gemini API
+   * @param imageFile - Image file details
+   * @returns Text caption for the image
    */
   private async captionSingleImage(imageFile: ImageDetails): Promise<string> {
     try {
-      // Read the image and convert to base64
-      const base64ImageData = fs.readFileSync(imageFile.path, { encoding: 'base64' });
+      // Get the model
+      const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
       
-      // Create the image part
-      const imagePart: InlineDataPart = {
-        inlineData: {
-          mimeType: imageFile.mimeType,
-          data: base64ImageData
+      // Read the image data
+      const imageData = fs.readFileSync(imageFile.path);
+      
+      // Create the parts for the content generation
+      const parts = [
+        { text: "Describe what's in this image in detail" },
+        {
+          inlineData: {
+            mimeType: imageFile.mimeType,
+            data: Buffer.from(imageData).toString('base64')
+          }
         }
-      };
-      
-      // Create content parts
-      const contentParts: Part[] = [
-        "Describe what's in this image in detail",
-        imagePart
       ];
       
-      // Create a model instance for the Gemini API
-      const model = this.ai.getGenerativeModel({ model: "gemini-2.0-flash" });
+      // Generate content
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts }]
+      });
       
-      // Generate the content
-      const result = await model.generateContent(contentParts);
+      // Get the response
       const response = await result.response;
-      
       return response.text();
     } catch (error) {
       console.error(`Error processing image ${imageFile.path}:`, error);
@@ -172,6 +181,8 @@ class ImageProcessor {
   
   /**
    * Process a specific list of images
+   * @param imagePaths - Array of image file paths (absolute or relative to mock_data)
+   * @returns Record of image names to captions
    */
   public async processSpecificImages(imagePaths: string[]): Promise<Record<string, string>> {
     const results: Record<string, string> = {};

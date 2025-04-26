@@ -10,9 +10,6 @@ interface ImageDetails {
   mimeType: string;
 }
 
-/**
- * Class for processing images with Gemini AI
- */
 class ImageProcessor {
   private genAI: GoogleGenerativeAI;
   private readonly mockDataDir: string;

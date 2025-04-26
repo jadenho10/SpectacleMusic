@@ -157,8 +157,11 @@ class ImageProcessor {
       // Read the image data
       const imageData = fs.readFileSync(imageFile.path);
       
-      // Create the parts for the content generation
-      const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [
+      // Create a chat session
+      const chat = model.startChat();
+      
+      // Prepare parts for message with prompt and image
+      const parts: any[] = [
         { text: "Describe what's in this image in detail" },
         {
           inlineData: {
@@ -168,14 +171,12 @@ class ImageProcessor {
         }
       ];
       
-      // Generate content
-      const result = await model.generateContent({
-        contents: [{ role: "user", parts }]
-      });
+      // Send the message with all parts
+      const result = await chat.sendMessage(parts);
       
-      // Get the response
-      const response = await result.response;
-      return response.text();
+      // Get the response text
+      const responseText = result.response.text();
+      return responseText;
     } catch (error) {
       console.error(`Error processing image ${imageFile.path}:`, error);
       throw error;

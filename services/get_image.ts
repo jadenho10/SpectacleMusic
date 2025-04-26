@@ -15,7 +15,6 @@ class ImageProcessor {
   private readonly mockDataDir: string;
   
   /**
-   * Constructor
    * @param apiKey - Gemini API key
    */
   constructor(apiKey: string) {

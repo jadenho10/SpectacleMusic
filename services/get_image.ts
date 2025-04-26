@@ -159,7 +159,7 @@ function runImageProcessor(): Promise<void> {
     try {
       const apiKey = process.env.GEMINI_API_KEY;
       if (!apiKey) {
-        throw new Error('API key error.');
+        throw new Error('API key error');
       }
       
       const processor = new ImageProcessor(apiKey);

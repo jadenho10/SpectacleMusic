@@ -2,6 +2,9 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { config } from "dotenv";
+import express from "express";
+import multer from "multer";
+import cors from "cors";
 
 config();
 
@@ -77,7 +80,7 @@ class ImageProcessor {
     return results;
   }
     
-  private async captionSingleImage(imageFile: ImageDetails): Promise<string> {
+  public async captionSingleImage(imageFile: ImageDetails): Promise<string> {
     try {
       const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
       const imageData = fs.readFileSync(imageFile.path);      
@@ -154,31 +157,116 @@ class ImageProcessor {
   }
 }
 
-function runImageProcessor(): Promise<void> {
-  return new Promise(async (resolve, reject) => {
+// Setup Express server
+function setupWebhookServer(): void {
+  const app = express();
+  const PORT = process.env.PORT || 3000;
+  const apiKey = process.env.GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY must be set in environment variables');
+  }
+  
+  const processor = new ImageProcessor(apiKey);
+  
+  // Configure multer for file uploads
+  const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      const uploadDir = path.join(process.cwd(), 'uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      cb(null, uploadDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+  });
+  
+  const upload = multer({ storage });
+  
+  // Middleware
+  app.use(cors());
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+  
+  // Health check endpoint
+  app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+  });
+  
+  // Process a single uploaded image
+  app.post('/process-image', upload.single('image'), async (req, res) => {
     try {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error('API key error');
+      if (!req.file) {
+        return res.status(400).json({ error: 'No image file provided' });
       }
       
-      const processor = new ImageProcessor(apiKey);
+      const imageFile: ImageDetails = {
+        path: req.file.path,
+        mimeType: req.file.mimetype
+      };
       
-      console.log('Processing individual images...');
-      const captions = await processor.processAllImages();
-      console.log('\nImage Captions:');
-      console.table(captions);
-
-      resolve();
+      const caption = await processor.captionSingleImage(imageFile);
+      
+      res.status(200).json({
+        success: true,
+        fileName: req.file.originalname,
+        caption
+      });
+      
+      // Clean up the uploaded file
+      fs.unlinkSync(req.file.path);
+      
     } catch (error) {
-      console.error('Error in main function:', error);
-      reject(error);
+      console.error('Error processing uploaded image:', error);
+      res.status(500).json({ error: 'Failed to process image', details: error.message });
     }
+  });
+  
+  // Process multiple images from the mock_data directory
+  app.post('/process-all', async (req, res) => {
+    try {
+      const captions = await processor.processAllImages();
+      res.status(200).json({
+        success: true,
+        captions
+      });
+    } catch (error) {
+      console.error('Error processing all images:', error);
+      res.status(500).json({ error: 'Failed to process images', details: error.message });
+    }
+  });
+  
+  // Process specific images from the mock_data directory
+  app.post('/process-specific', async (req, res) => {
+    try {
+      const { images } = req.body;
+      
+      if (!images || !Array.isArray(images) || images.length === 0) {
+        return res.status(400).json({ error: 'Invalid or empty images array' });
+      }
+      
+      const captions = await processor.processSpecificImages(images);
+      res.status(200).json({
+        success: true,
+        captions
+      });
+    } catch (error) {
+      console.error('Error processing specific images:', error);
+      res.status(500).json({ error: 'Failed to process specific images', details: error.message });
+    }
+  });
+  
+  // Start the server
+  app.listen(PORT, () => {
+    console.log(`Image processing webhook server running on port ${PORT}`);
   });
 }
 
-export { runImageProcessor as main, ImageProcessor };
+export { setupWebhookServer as main, ImageProcessor };
 
 if (require.main === module) {
-  runImageProcessor().catch(console.error);
+  setupWebhookServer();
 }

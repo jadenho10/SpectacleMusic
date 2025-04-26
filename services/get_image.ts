@@ -139,12 +139,6 @@ class ImageProcessor {
     }
   }
   
-  /**
-   * Upload an image file to Gemini API and get a URI reference
-   * This method is used when you want to reference images across multiple API calls
-   * @param imagePath - Path to the image file
-   * @returns Object with URI and mime type
-   */
   public async uploadImage(imagePath: string): Promise<{ uri: string; mimeType: string }> {
     try {
       const fullPath = path.isAbsolute(imagePath) ? imagePath : path.join(this.mockDataDir, imagePath);

@@ -21,11 +21,7 @@ class ImageProcessor {
     this.genAI = new GoogleGenerativeAI(apiKey);
     this.mockDataDir = path.join(process.cwd(), 'mock_data');
   }
-  
-  /**
-   * Gets all image files from the mock_data directory
-   * @returns Array of image file details
-   */
+
   private getImageFiles(): ImageDetails[] {
     try {
       const files = fs.readdirSync(this.mockDataDir);

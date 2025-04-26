@@ -149,8 +149,6 @@ class ImageProcessor {
         mimeType = 'image/png';
       }
       
-      // For Gemini API, we don't actually upload files but need their data
-      // This is a simplified implementation
       return {
         uri: `file://${fullPath}`,
         mimeType

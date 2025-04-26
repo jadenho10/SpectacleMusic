@@ -131,7 +131,6 @@ class ImageProcessor {
       
       const result = await chat.sendMessage(parts);
       
-      // Get the response text
       const responseText = result.response.text();
       return responseText;
     } catch (error) {

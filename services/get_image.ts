@@ -53,10 +53,6 @@ class ImageProcessor {
     }
   }
   
-  /**
-   * Process all images in the mock_data folder and generate captions
-   * @returns Record of image names to captions
-   */
   public async processAllImages(): Promise<Record<string, string>> {
     const imageFiles = this.getImageFiles();
     if (imageFiles.length === 0) {

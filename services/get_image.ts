@@ -78,11 +78,6 @@ class ImageProcessor {
     return results;
   }
   
-  /**
-   * Compare multiple images and describe the differences
-   * @param promptText - Optional text prompt to use for comparing images
-   * @returns Text description of image comparison
-   */
   public async compareImages(promptText: string = "What is different between these images?"): Promise<string> {
     const imageFiles = this.getImageFiles();
     if (imageFiles.length < 2) {

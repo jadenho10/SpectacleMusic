@@ -113,11 +113,6 @@ class ImageProcessor {
     }
   }
   
-  /**
-   * Captions a single image using Gemini API
-   * @param imageFile - Image file details
-   * @returns Text caption for the image
-   */
   private async captionSingleImage(imageFile: ImageDetails): Promise<string> {
     try {
       // Get the model

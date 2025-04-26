@@ -218,7 +218,52 @@ function setupWebhookServer(): void {
     res.status(200).json({ status: 'ok' });
   });
   
-  // Process a single uploaded image
+  // Add a GET endpoint for processing an image by path
+  app.get('/process-image', async (req: any, res: any) => {
+    try {
+      const imagePath = req.query.path;
+      
+      if (!imagePath || typeof imagePath !== 'string') {
+        return res.status(400).json({ 
+          error: 'No image path provided', 
+          example: '/process-image?path=example.jpg' 
+        });
+      }
+      
+      // Create image details for the file
+      const fullPath = path.isAbsolute(imagePath) ? imagePath : path.join(processor.mockDataDir, imagePath);
+      
+      if (!fs.existsSync(fullPath)) {
+        return res.status(404).json({ error: `Image not found at path: ${fullPath}` });
+      }
+      
+      const fileExt = path.extname(fullPath).toLowerCase();
+      let mimeType = 'image/jpeg';
+      
+      if (fileExt === '.png') {
+        mimeType = 'image/png';
+      }
+      
+      const imageFile: ImageDetails = {
+        path: fullPath,
+        mimeType
+      };
+      
+      const caption = await processor.captionSingleImage(imageFile);
+      
+      res.status(200).json({
+        success: true,
+        fileName: path.basename(fullPath),
+        caption
+      });
+      
+    } catch (error: any) {
+      console.error('Error processing image by path:', error);
+      res.status(500).json({ error: 'Failed to process image', details: error.message || String(error) });
+    }
+  });
+  
+  // Process a single uploaded image (POST version still needed for file uploads)
   app.post('/process-image', upload.single('image'), async (req: any, res: any) => {
     try {
       if (!req.file) {
@@ -248,7 +293,7 @@ function setupWebhookServer(): void {
   });
   
   // Process multiple images from the mock_data directory
-  app.post('/process-all', async (req: any, res: any) => {
+  app.get('/process-all', async (req: any, res: any) => {
     try {
       const captions = await processor.processAllImages();
       res.status(200).json({
@@ -262,12 +307,22 @@ function setupWebhookServer(): void {
   });
   
   // Process specific images from the mock_data directory
-  app.post('/process-specific', async (req: any, res: any) => {
+  app.get('/process-specific', async (req: any, res: any) => {
     try {
-      const { images } = req.body;
+      // Get images from query parameter instead of body
+      const imagesParam = req.query.images;
+      let images = [];
       
-      if (!images || !Array.isArray(images) || images.length === 0) {
-        return res.status(400).json({ error: 'Invalid or empty images array' });
+      if (typeof imagesParam === 'string') {
+        // Handle single image passed as string
+        images = [imagesParam];
+      } else if (Array.isArray(imagesParam)) {
+        // Handle array of images
+        images = imagesParam;
+      }
+      
+      if (!images || images.length === 0) {
+        return res.status(400).json({ error: 'Invalid or empty images query parameter. Use ?images=image1.jpg or ?images[]=image1.jpg&images[]=image2.png' });
       }
       
       const captions = await processor.processSpecificImages(images);

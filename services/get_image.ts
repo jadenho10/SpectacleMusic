@@ -119,7 +119,6 @@ class ImageProcessor {
       const imageData = fs.readFileSync(imageFile.path);      
       const chat = model.startChat();
       
-      // Prepare parts for message with prompt and image
       const parts: any[] = [
         { text: "Describe what's in this image in detail" },
         {

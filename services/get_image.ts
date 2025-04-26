@@ -71,7 +71,7 @@ class ImageProcessor {
         results[fileName] = caption;
         console.log(`✅ Processed: ${fileName}`);
       } catch (error) {
-        console.error(`❌ Error processing ${path.basename(imageFile.path)}:`, error);
+        console.error(`❌ Error ${path.basename(imageFile.path)}:`, error);
       }
     }
     

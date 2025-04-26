@@ -74,7 +74,6 @@ class ImageProcessor {
         console.error(`❌ Error ${path.basename(imageFile.path)}:`, error);
       }
     }
-    
     return results;
   }
   

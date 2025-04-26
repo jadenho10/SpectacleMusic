@@ -107,7 +107,6 @@ class ImageProcessor {
       
       const responseText = result.response.text();
       return responseText;
-      
     } catch (error) {
       console.error('Error comparing images:', error);
       throw error;

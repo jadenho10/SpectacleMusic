@@ -85,21 +85,14 @@ class ImageProcessor {
     }
     
     try {
-      // Get the model
       const model = this.genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
-      
-      // Create a chat session
       const chat = model.startChat();
-      
-      // Prepare parts for message
       const parts: any[] = [];
       
-      // Add the text part
       parts.push({
         text: promptText
       });
       
-      // Add each image as a part
       for (const imageFile of imageFiles) {
         const imageData = fs.readFileSync(imageFile.path);
         parts.push({
@@ -110,12 +103,11 @@ class ImageProcessor {
         });
       }
       
-      // Send the message with all parts
       const result = await chat.sendMessage(parts);
       
-      // Get the response text
       const responseText = result.response.text();
       return responseText;
+      
     } catch (error) {
       console.error('Error comparing images:', error);
       throw error;

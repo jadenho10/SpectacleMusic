@@ -1,5 +1,5 @@
 # Spectacle Music
-[spectacles_music.mp4](https://www.youtube.com/watch?v=sDJ26lrEffc)
+[Here's our simple demo video:](https://www.youtube.com/watch?v=sDJ26lrEffc)
 ![spectacles](scrnsht.png)
 Hacked at LA Hacks, we created Spectacle Music. 
 

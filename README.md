@@ -1,6 +1,6 @@
 # Spectacle Music
-
-Hacked at LA Hacks, we created Spectacle Music.
+<video src="readme_sample.mp4" controls></video>
+Hacked at LA Hacks, we created Spectacle Music. 
 
 ## Details
 

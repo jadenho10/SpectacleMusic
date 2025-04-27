@@ -1,0 +1,39 @@
+- !<AssetImportMetadata/68905444-8888-47b2-b66d-5f545535e8f7>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 6c3f9952-0429-421d-914f-54a6c5d3bb2e
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 6c3f9952-0429-421d-914f-54a6c5d3bb2e
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 03339a00-6519-48d3-b318-9faf0b6b9c74
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/03339a00-6519-48d3-b318-9faf0b6b9c74>
+  SvgIcon: ""
+  Description: ""
+  InternalVersion: 0
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 9b297e69-e7b5-4701-8e43-9095f1449e53
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    uiImage: false
+  ScriptTypesHidden:
+    {}
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - uiImage: !<reference.Image> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input Component.Image uiImage {"hint":"The image in the scene that will be showing the captured frame."}'

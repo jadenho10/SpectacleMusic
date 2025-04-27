@@ -1,0 +1,13 @@
+- !<AssetCache>
+  AssetFiles:
+    ff942fe3-4788-4411-9268-3bee40209fbe: 5a6217bb-90d5-4023-899f-b08d2639eb58/49bc3981ef1b355d09fa8289520d1f3f/Data/mask_outline_colored.png
+  Assets:
+    - !<FileTexture/ff942fe3-4788-4411-9268-3bee40209fbe>
+      PackagePath: ""
+      FileInfo: !<FileTextureInfo>
+        Width: 256
+        Height: 256
+  SourceHash: 49bc3981ef1b355d09fa8289520d1f3f
+  FileHash: 35310ea34d14467896b6930c19aad49d
+  NativePackageItems:
+    []

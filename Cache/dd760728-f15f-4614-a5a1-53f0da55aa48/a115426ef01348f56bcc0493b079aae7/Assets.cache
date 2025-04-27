@@ -1,0 +1,17 @@
+- !<AssetCache>
+  AssetFiles:
+    97692945-2617-4d17-9f2f-f4daac9eaa2e: dd760728-f15f-4614-a5a1-53f0da55aa48/a115426ef01348f56bcc0493b079aae7/Data/FingerCapsule.mesh
+  Assets:
+    - !<FileMesh/97692945-2617-4d17-9f2f-f4daac9eaa2e>
+      PackagePath: ""
+      Info: !<MeshInfo>
+        Triangles: 1024
+        Vertices: 592
+        Blendshapes:
+          []
+        Joints: 0
+        AabbSize: {x: 2.000000, y: 1.999999, z: 7.039599}
+  SourceHash: a115426ef01348f56bcc0493b079aae7
+  FileHash: e3728114f693d04f55561d261c5aab98
+  NativePackageItems:
+    []

@@ -1,0 +1,193 @@
+- !<AssetCache>
+  AssetFiles:
+    ec7d928d-1d8a-482a-ad02-8456eee4569b: 1532ff10-fafa-483b-a0b2-b3839dd2931d/a4377594c4dfcee508f3daf69b2c1765/Data/WebViewFingerVisual.ss_graph
+  Assets:
+    - !<ShaderGraphPass/ec7d928d-1d8a-482a-ad02-8456eee4569b>
+      PackagePath: ""
+      DefaultDefines:
+        []
+      DefaultProperties:
+        Port_Amount_N009:
+          typeIdx: 1
+          value: 4.000000
+        Port_Bool_N037:
+          typeIdx: 1
+          value: 0.000000
+        Port_Depth_N004:
+          typeIdx: 1
+          value: 1.000000
+        Port_Exponent_N003:
+          typeIdx: 1
+          value: 2.000000
+        Port_FinalColor1_N004:
+          typeIdx: 5
+          value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+        Port_FinalColor2_N004:
+          typeIdx: 5
+          value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+        Port_FinalColor3_N004:
+          typeIdx: 5
+          value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+        Port_GSplatPointSize_N004:
+          typeIdx: 1
+          value: 0.000000
+        Port_Input0_N010:
+          typeIdx: 1
+          value: 1.000000
+        Port_Input0_N011:
+          typeIdx: 1
+          value: 0.200000
+        Port_Input0_N014:
+          typeIdx: 1
+          value: 0.000000
+        Port_Input1_N011:
+          typeIdx: 1
+          value: 0.300000
+        Port_Input1_N013:
+          typeIdx: 4
+          value: {x: 1.000000, y: 0.893355, z: 0.358633}
+        Port_Input1_N014:
+          typeIdx: 1
+          value: 0.800000
+        Port_Input1_N018:
+          typeIdx: 1
+          value: -0.500000
+        Port_Input1_N020:
+          typeIdx: 1
+          value: 400.000000
+        Port_Input1_N023:
+          typeIdx: 1
+          value: 0.060000
+        Port_Input1_N024:
+          typeIdx: 1
+          value: 0.300000
+        Port_Input1_N027:
+          typeIdx: 1
+          value: 1.330000
+        Port_Input1_N031:
+          typeIdx: 1
+          value: 1.330000
+        Port_Input1_N032:
+          typeIdx: 1
+          value: 0.050000
+        Port_Input1_N034:
+          typeIdx: 1
+          value: 3.141500
+        Port_Input1_N035:
+          typeIdx: 1
+          value: 0.000000
+        Port_Input1_N036:
+          typeIdx: 1
+          value: 0.900000
+        Port_Intensity_N003:
+          typeIdx: 1
+          value: 2.000000
+        Port_Multiplier_N019:
+          typeIdx: 1
+          value: 4.000000
+        Port_Multiplier_N028:
+          typeIdx: 1
+          value: -0.990000
+        Port_RayDirection_N004:
+          typeIdx: 4
+          value: {x: 0.000000, y: 1.000000, z: 0.000000}
+        Port_RayOrigin_N004:
+          typeIdx: 4
+          value: {x: 0.000000, y: 0.000000, z: 0.000000}
+        Port_Value3_N002:
+          typeIdx: 1
+          value: 0.000000
+        Port_Value4_N002:
+          typeIdx: 1
+          value: 0.000000
+        Port_WorldNormal_N004:
+          typeIdx: 4
+          value: {x: 0.000000, y: 1.000000, z: 0.000000}
+        Port_WorldPosition_N004:
+          typeIdx: 4
+          value: {x: 0.000000, y: 0.000000, z: 0.000000}
+        Port_WorldTangent_N004:
+          typeIdx: 4
+          value: {x: 0.000000, y: 0.000000, z: 1.000000}
+      PassUiData: !<PassUiData>
+        ExtraDefines:
+          - SC_ENABLE_RT_CASTER
+        PassBindings:
+          - mLabel: Graph Parameters
+            mType: Invalid
+            mName: ""
+            mWidget: group_start
+            mHint: ""
+            mMin: ~
+            mMax: ~
+            mStep: ~
+            mDefaultVal: ~
+            mValues:
+              []
+          - mLabel: baseColor
+            mType: Property
+            mName: baseColor
+            mWidget: color
+            mHint: "Property: baseColor"
+            mMin: ~
+            mMax: ~
+            mStep: ~
+            mDefaultVal: 1.000000
+            mValues:
+              []
+          - mLabel: trigger
+            mType: Property
+            mName: trigger
+            mWidget: spinbox
+            mHint: "Property: trigger"
+            mMin: ~
+            mMax: ~
+            mStep: 0.010000
+            mDefaultVal: 1.000000
+            mValues:
+              []
+          - mLabel: alpha
+            mType: Property
+            mName: alpha
+            mWidget: spinbox
+            mHint: "Property: alpha"
+            mMin: ~
+            mMax: ~
+            mStep: 0.010000
+            mDefaultVal: 1.000000
+            mValues:
+              []
+          - mLabel: ""
+            mType: GroupEnd
+            mName: ""
+            mWidget: group_end
+            mHint: ""
+            mMin: ~
+            mMax: ~
+            mStep: ~
+            mDefaultVal: ~
+            mValues:
+              []
+          - mLabel: Alpha Test Threshold
+            mType: Property
+            mName: alphaTestThreshold
+            mWidget: slider
+            mHint: |-
+              Property: alphaTestThreshold
+              
+              When the 'Alpha Test' blend mode is enabled, pixels with alpha values lower than this disappear.
+            mMin: 0.000000
+            mMax: 1.000000
+            mStep: 0.001000
+            mDefaultVal: 0.500000
+            mValues:
+              []
+      ShaderPath: 1532ff10-fafa-483b-a0b2-b3839dd2931d/a4377594c4dfcee508f3daf69b2c1765/Data/cfd37fa/WebViewFingerVisual.glsl
+      Defines:
+        []
+      Properties:
+        {}
+  SourceHash: a4377594c4dfcee508f3daf69b2c1765
+  FileHash: cffb9d02cc73503c3b14d6697915a8d0
+  NativePackageItems:
+    []

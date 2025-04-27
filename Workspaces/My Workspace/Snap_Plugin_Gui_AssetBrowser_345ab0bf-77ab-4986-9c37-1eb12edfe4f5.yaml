@@ -1,0 +1,17 @@
+CollapsedEntities:
+  type: stringset
+  value:
+    size: 11
+    values:
+      - Echopark.hdr
+      - Image 2.mat
+      - LensManager.ts
+      - SpectaclesInteractionKit
+      - SpectaclesInteractionKit/Assets
+      - SpectaclesInteractionKit/package.native
+      - Utils
+      - Utils/FileLogger.ts
+      - VisionGemini.ts
+      - Web View
+      - Web View/package.native
+  options: 4

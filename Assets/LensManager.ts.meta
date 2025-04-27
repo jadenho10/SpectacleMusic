@@ -1,0 +1,45 @@
+- !<AssetImportMetadata/1aa4aee2-47d2-4317-867e-a6756e9fedfc>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 67ad648d-dbb3-4211-a08d-a095c03b1cfc
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 67ad648d-dbb3-4211-a08d-a095c03b1cfc
+  PackageType: NotAPackage
+  PackagePolicy: CannotBeUnpacked
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 5174d764-1297-4a10-a2dd-39649257f8eb
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/5174d764-1297-4a10-a2dd-39649257f8eb>
+  SvgIcon: ""
+  Description: ""
+  InternalVersion: 0
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 7df39616-f4b0-46d0-af69-658ff3743459
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  CurrentVisibility: Editable
+  MaxVisibility: Editable
+  ScriptInputsHidden:
+    createButton: false
+    visionGemini: false
+    webViewer: false
+  ScriptTypesHidden:
+    {}
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  DefaultScriptInputs:
+    - createButton: !<MappingBased.Interactable> 00000000-0000-0000-0000-000000000000
+      webViewer: !<MappingBased.WebView> 00000000-0000-0000-0000-000000000000
+      visionGemini: !<MappingBased.VisionGemini> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input Interactable createButton {"hint":"The button that will create the prefab object"}'
+    - '// @input WebView webViewer {"hint":"The web viewer"}'
+    - '// @input VisionGemini visionGemini {"hint":"Vision Gemini component for image analysis"}'

@@ -1,0 +1,13 @@
+- !<AssetCache>
+  AssetFiles:
+    95e56130-ae9f-449f-b75f-b220d94fd1f4: da7271f6-e2f0-4c87-a93d-781e09c2f252/2a460ec02f4dd5a21864b61a13750729/Data/mask_fingertip.jpg
+  Assets:
+    - !<FileTexture/95e56130-ae9f-449f-b75f-b220d94fd1f4>
+      PackagePath: ""
+      FileInfo: !<FileTextureInfo>
+        Width: 512
+        Height: 512
+  SourceHash: 2a460ec02f4dd5a21864b61a13750729
+  FileHash: d8822e655ce6ef9f59ebb1ddf2d4d83d
+  NativePackageItems:
+    []

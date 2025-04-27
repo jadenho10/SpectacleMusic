@@ -1,0 +1,12 @@
+- !<AssetCache>
+  AssetFiles:
+    723313da-c095-45e8-ad94-978b0f25801a: 4695520e-10cd-49bd-9fe6-f6cf4d7c7b18/fb0e3ee63dc15535f1d4821ea00c1f18/Data/spinner-2.mp4
+  Assets:
+    - !<VideoTexture/723313da-c095-45e8-ad94-978b0f25801a>
+      PackagePath: ""
+      AutoPlay: true
+      Volume: 1.000000
+  SourceHash: fb0e3ee63dc15535f1d4821ea00c1f18
+  FileHash: 417ac0dacc49a2edccc13093821534af
+  NativePackageItems:
+    []

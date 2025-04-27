@@ -1,5 +1,5 @@
 # Spectacle Music
-<video src="readme_sample.mp4" controls></video>
+<video src="[readme_sample.mp4](https://youtu.be/sDJ26lrEffc)" controls></video>
 Hacked at LA Hacks, we created Spectacle Music. 
 
 ## Details

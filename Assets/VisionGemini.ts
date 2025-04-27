@@ -19,7 +19,7 @@ export class VisionGeminiFlash extends BaseScriptComponent {
   timestamp: Date;
   locationSource: string;
 
-  apiKey: string = "AIzaSyDwczme1kr3zDwJ7NLyyfLPY4ZdiVgRWmY";
+  apiKey: string = "";
 
   // Remote service module for fetching data
   private locationService: LocationService;

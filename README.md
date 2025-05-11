@@ -11,5 +11,5 @@ That's why we've used the SnapChat Spectacles to take a photo of your environmen
 We used ContainerFrameUI, slide tracker, webhooks for Gemini API, and many other libraries in Lens Studio.
 
 ## Set Up Instructions
-Setup in Snap Studio <br>
+Setup in Lens Studio <br>
 Connect to Spectacles
